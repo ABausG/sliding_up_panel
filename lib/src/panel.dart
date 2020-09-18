@@ -163,6 +163,10 @@ class SlidingUpPanel extends StatefulWidget {
   /// by default the Panel is open and must be swiped closed by the user.
   final PanelState defaultPanelState;
 
+  /// The PointerDevice Kind
+  /// by default PointerDeviceKind.touch
+  final PointerDeviceKind pointerDeviceKind;
+
   SlidingUpPanel({
     Key key,
     this.panel,
@@ -199,7 +203,7 @@ class SlidingUpPanel extends StatefulWidget {
     this.slideDirection = SlideDirection.UP,
     this.defaultPanelState = PanelState.CLOSED,
     this.header,
-    this.footer
+    this.footer, this.pointerDeviceKind = PointerDeviceKind.touch
   }) : assert(panel != null || panelBuilder != null),
        assert(0 <= backdropOpacity && backdropOpacity <= 1.0),
        assert (snapPoint == null || 0 < snapPoint && snapPoint < 1.0),
@@ -215,7 +219,7 @@ class _SlidingUpPanelState extends State<SlidingUpPanel> with SingleTickerProvid
 
   ScrollController _sc;
   bool _scrollingEnabled = false;
-  VelocityTracker _vt = new VelocityTracker();
+  VelocityTracker _vt;
 
   bool _isPanelVisible = true;
 
@@ -223,8 +227,10 @@ class _SlidingUpPanelState extends State<SlidingUpPanel> with SingleTickerProvid
   void initState(){
     super.initState();
 
+    _vt = new VelocityTracker(widget.pointerDeviceKind);
+
     _ac = new AnimationController(
-      vsync: this,
+      TickerProvider: this,
       duration: const Duration(milliseconds: 300),
       value: widget.defaultPanelState == PanelState.CLOSED ? 0.0 : 1.0 //set the default panel state (i.e. set initial value of _ac)
     )..addListener((){
