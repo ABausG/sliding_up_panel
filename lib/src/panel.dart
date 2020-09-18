@@ -236,7 +236,7 @@ class _SlidingUpPanelState extends State<SlidingUpPanel> with SingleTickerProvid
     _vt = new VelocityTracker(widget.pointerDeviceKind);
 
     _ac = new AnimationController(
-      TickerProvider: this,
+      vsync: this,
       duration: const Duration(milliseconds: 300),
       value: widget.defaultPanelState == PanelState.CLOSED ? widget.initialHeight : 1.0 //set the default panel state (i.e. set initial value of _ac)
     )..addListener((){
